@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="member">
+
+	<insert id="insertMember" parameterType="membervo">
+	<![CDATA[
+	insert into member(reg_date , name, password, birth, email, gender, phone_num, admin) values( 
+	now(),
+	aes_encrypt(#{name },SHA2('shopmall',512)),
+	SHA2(#{password },512),
+	#{birth },
+	aes_encrypt(#{email },SHA2('shopmall',512)), 
+	'M', 
+	aes_encrypt(#{phone_num },SHA2('shopmall',512)),
+	0);
+	]]>
+	</insert>
+	
+	<select id="selectByEmail" parameterType="string" resultType="membervo">
+	<![CDATA[
+	select * from member where email=aes_encrypt(#{email },SHA2('shopmall',512));
+	]]>
+	</select>
+	
+	<select id="selectByEmailandPassword" parameterType="membervo" resultType="membervo">
+	<![CDATA[
+	select * from member where email=aes_encrypt(#{email },SHA2('shopmall',512)) and password=SHA2(#{password },512);
+	]]>
+	</select>
+	
+	<select id="existMemberAddress" parameterType="string" resultType="string">
+	<![CDATA[
+		select address from member where email=aes_encrypt(#{email },SHA2('shopmall',512));
+	]]>
+	</select>
+	
+	<delete id="deleteByEmail" parameterType="membervo">
+	<![CDATA[
+	delete from member where email=aes_encrypt(#{email },SHA2('shopmall',512)) 
+	and password=SHA2(#{password },512);
+	]]>
+	</delete>
+	
+	<!-- UPDATE -->
+	<update id="updateMember" parameterType="membervo">
+		<![CDATA[
+		update member set password=SHA2(#{password },512),name=aes_encrypt(#{name },SHA2('shopmall',512)),
+		phone_num=aes_encrypt(#{phone_num },SHA2('shopmall',512))
+		 where email = aes_encrypt(#{email },SHA2('shopmall',512));
+		]]>
+	</update>
+	
+	<update id="addMemberAddress" parameterType="membervo">
+		<![CDATA[
+		update member set address=aes_encrypt(#{address },SHA2('shopmall',512))
+		 where email = aes_encrypt(#{email },SHA2('shopmall',512));
+		]]>
+	</update>
+	
+	
+</mapper>

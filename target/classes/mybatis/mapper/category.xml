@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="category">
+
+<!-- ######INSERT####### -->
+<!-- 메인 카테고리 생성 -->
+<insert id="addMainCategory" parameterType="categoryvo">
+<![CDATA[
+	insert into main_category values(#{main_no }, #{name });
+]]>
+</insert>
+
+<!-- 서브 카테고리 생성 -->
+<insert id="addSubCategory" parameterType="categoryvo">
+<![CDATA[
+	insert into sub_category values(#{main_no }, #{sub_no }, #{name });
+]]>
+</insert>
+
+<!-- 카테고리 전체 조회 -->
+<select id="getCategoryList" resultType="categoryvo">
+	select * from main_category;
+</select>
+
+<select id="getSubCategoryList" resultType="categoryvo">
+	select * from sub_category;
+</select>
+
+<!-- 특정 카테고리 조회 -->
+<select id="getSpecificSubCategoryList" parameterType="long" resultType="categoryvo">
+<![CDATA[
+	select * from sub_category where main_no = #{main_no };
+]]>
+</select>
+
+<!-- 상위 카테고리 수정 -->
+<update id="updateMainCategory" parameterType="categoryvo">
+<![CDATA[
+	update main_category set name=#{name } where main_no=#{main_no };
+]]>
+</update>
+
+<!-- 하위 카테고리 수정 -->
+<update id="updateSubCategory" parameterType="categoryvo">
+<![CDATA[
+	update sub_category set name=#{name } where main_no=#{main_no } and sub_no=#{sub_no };
+]]>
+</update>
+
+<!-- 상위 카테고리 삭제 -->
+<delete id="deleteMainCategory" parameterType="categoryvo">
+<![CDATA[
+	delete from main_category where main_no=#{main_no };
+]]>
+</delete>
+<delete id="deleteSubCategoryByMain" parameterType="categoryvo">
+<![CDATA[
+	delete from sub_category where main_no=#{main_no };
+]]>
+</delete>
+
+<!-- 하위 카테고리 삭제 -->
+<delete id="deleteSubCategory" parameterType="categoryvo">
+<![CDATA[
+	delete from sub_category where main_no=#{main_no } and sub_no=#{sub_no };
+]]>
+</delete>
+
+
+
+</mapper>
